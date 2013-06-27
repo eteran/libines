@@ -25,15 +25,6 @@ extern "C"{
 
 #include "lib_ines.h"
 
-/* description of a ines file */
-typedef struct {
-	ines_header_t *header;
-	uint8_t       *trainer;
-	uint8_t       *prg_rom;
-	uint8_t       *chr_rom;
-	uint8_t        version;
-} ines_cart_t;
-
 typedef enum {
 	MIRR_HORIZONTAL,
 	MIRR_VERTICAL,
@@ -72,21 +63,30 @@ typedef enum {
 	PPU_RESERVED_3
 } INES_PPU;
 
-/* some example implementations for loading and freeing a INES file */
-INES_RETURN_CODE load_file_INES(const char *filename, ines_cart_t *cart);
+/* abstract description of a iNES file */
+typedef struct {
+	ines_header_t *header;       /* raw iNES header */
+	uint8_t       *trainer;      /* pointer to trainer data or NULL */
+	uint8_t       *prg_rom;      /* pointer to PRG data */
+	uint8_t       *chr_rom;      /* pointer to CHR data or NULL */
+	uint8_t        version;      /* iNES header version */
+	uint32_t       trainer_size; /* size of trainer data or 0 */
+	uint32_t       prg_size;     /* size of PRG data */
+	uint32_t       chr_size;     /* size of CHR data or 0 */
+	INES_MIRRORING mirroring;
+	INES_SYSTEM    system;
+	INES_DISPLAY   display;
+	INES_PPU       ppu;
+	uint16_t       mapper;       /* iNES mapper number */
+	uint16_t       submapper;    /* iNES sub-mapper number */
+} ines_cart_t;
+
+/* functions for loading and freeing a iNES file */
 INES_RETURN_CODE free_file_INES(ines_cart_t *cart);
-INES_RETURN_CODE load_ptr_INES(const uint8_t *rom, size_t size, ines_cart_t *cart);
+INES_RETURN_CODE load_file_INES(const char *filename, ines_cart_t *cart);
 INES_RETURN_CODE write_file_INES(const char *filename, const ines_cart_t *cart);
 
 /* API access to iNES data, works with version 2.0 ROMs as well */
-INES_MIRRORING mirroring_INES(const ines_cart_t *cart);
-INES_SYSTEM system_INES(const ines_cart_t *cart);
-INES_DISPLAY display_INES(const ines_cart_t *cart);
-INES_PPU ppu_INES(const ines_cart_t *cart);
-uint32_t mapper_INES(const ines_cart_t *cart);
-uint32_t submapper_INES(const ines_cart_t *cart);
-uint32_t prg_size_INES(const ines_cart_t *cart);
-uint32_t chr_size_INES(const ines_cart_t *cart);
 uint32_t prg_hash_INES(const ines_cart_t *cart);
 uint32_t chr_hash_INES(const ines_cart_t *cart);
 uint32_t rom_hash_INES(const ines_cart_t *cart);
