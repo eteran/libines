@@ -26,7 +26,7 @@ extern "C"{
 #include "ines_types.h"
 #include <stdio.h>
 
-/* Layout of First Sixteen Bytes of NES Cartridge in iNES format*/
+/* layout of first sixteen bytes of nes cartridge in ines format */
 typedef struct {
 	char    ines_signature[4]; /* 0x1A53454E (NES file signature) */
 	uint8_t prg_size;          /* in 16k banks */
@@ -53,12 +53,6 @@ typedef struct {
 		} ines1;
 	} extended;
 } ines_header_t;
-
-/* Flags in ines_header_t.ctrl1 */
-#define INES_MIRROR  0x01
-#define INES_SRAM    0x02
-#define INES_TRAINER 0x04
-#define INES_4SCREEN 0x08
 
 /* function prototypes */
 INES_RETURN_CODE check_header_INES(const ines_header_t *header, int version);
